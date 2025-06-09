@@ -22,17 +22,17 @@ export class Results extends Component {
   public tryAgainLabel: Label;
 
   maxScore: number = 0;
-  currentScore: number = 0;
+  currentScore: number;
 
   updateScore(score: number): void {
     this.currentScore = score;
-    this.scoreLabel.string = ("" + this.currentScore).toString();
+    this.scoreLabel.string = "" + this.currentScore;
   }
 
   resetScore(): void {
     this.updateScore(0);
     this.hideResults();
-    this.scoreLabel.string = ("" + this.currentScore).toString();
+    this.scoreLabel.string = "" + this.currentScore;
   }
 
   addScore(): void {
@@ -41,7 +41,12 @@ export class Results extends Component {
 
   showResults(): void {
     this.maxScore = Math.max(this.currentScore, this.maxScore);
-    this.highScoreLabel.string = ("" + this.maxScore).toString();
+    this.highScoreLabel.string = (
+      "High Score" +
+      " " +
+      this.maxScore
+    ).toString();
+
     this.highScoreLabel.node.active = true;
     this.tryAgainLabel.node.active = true;
   }
