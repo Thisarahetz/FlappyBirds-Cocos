@@ -75,7 +75,7 @@ export class GameCtrl extends Component {
   initListener() {
     
     //if keyboard key goes down, go to onKeyDown
-    input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
+    // input.on(Input.EventType.KEY_DOWN, this.onKeyDown, this);
 
     //if an mouse or finger goes down, do this
     this.node.on(Node.EventType.TOUCH_START, () => {
@@ -126,7 +126,7 @@ export class GameCtrl extends Component {
   gameOver() {
     
     //show the results
-    this.result.showResults();
+    this.result.showResult();
 
     //game is over
     this.isOver = true;
@@ -160,7 +160,7 @@ export class GameCtrl extends Component {
   startGame() {
     
     //hide high score and other text
-    this.result.hideResults();
+    this.result.hideResult();
 
     //resume game
     director.resume();
@@ -186,53 +186,53 @@ export class GameCtrl extends Component {
 
   }
 
-  // //check if there was contact with the bird and objects
-  // contactGroundPipe() {
+  //check if there was contact with the bird and objects
+  contactGroundPipe() {
     
-  //   //make a collider call from the bird's collider2D component
-  //   let collider = this.bird.getComponent(Collider2D);
+    //make a collider call from the bird's collider2D component
+    let collider = this.bird.getComponent(Collider2D);
 
-  //   //check if the collider hit other colliders
-  //   if (collider) {
-  //     collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
-  //   }
+    //check if the collider hit other colliders
+    if (collider) {
+      collider.on(Contact2DType.BEGIN_CONTACT, this.onBeginContact, this);
+    }
 
-  // }
+  }
 
   //if you hit something, tell the bird you did
-  // onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
+  onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D, contact: IPhysics2DContact | null) {
 
-  //   //will be called once when two colliders begin to contact
-  //   this.bird.hitSomething = true;
+    //will be called once when two colliders begin to contact
+    this.bird.hitSomething = true;
 
-  //   //make the hit sound
-  //   this.clip.onAudioQueue(2);
+    //make the hit sound
+    // this.clip.onAudioQueue(2);
 
-  // }
+  }
 
   //hit detection call
-  // birdStruck() {
+  birdStruck() {
   
-  //   //make a call to the gameBrain to see if it hit something.
-  //   this.contactGroundPipe()
+    //make a call to the gameBrain to see if it hit something.
+    this.contactGroundPipe()
 
-  //   //if we hit it, tell the game to call game over.
-  //   if (this.bird.hitSomething == true)
-  //   {
-  //       this.gameOver();
-  //   }
+    //if we hit it, tell the game to call game over.
+    if (this.bird.hitSomething == true)
+    {
+        this.gameOver();
+    }
       
-  // }
+  }
 
   //every time the game updates, do this
-  // update(){
+  update(){
 
-  //   //if the game is still going, check if the bird hit something
-  //   if (this.isOver == false){
-  //       this.birdStruck();
-  //   }
+    //if the game is still going, check if the bird hit something
+    if (this.isOver == false){
+        this.birdStruck();
+    }
     
-  // }
+  }
 
 }
 

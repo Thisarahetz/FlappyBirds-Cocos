@@ -1,91 +1,114 @@
-import {
-  _decorator,
-  Canvas,
-  Component,
-  director,
-  Node,
-  UITransform,
-  Vec3,
-} from "cc";
-import { GameCtrl } from "./GameCtrl";
+import { _decorator, Component, Node, Vec3, UITransform, director, Canvas} from 'cc';
 const { ccclass, property } = _decorator;
 
-@ccclass("Ground")
+import { GameCtrl } from './GameCtrl';
+
+@ccclass('Ground')
 export class Ground extends Component {
-  @property({
-    type: Node,
-    tooltip: "Ground 1 is Here",
-  })
-  ground1: Node | null = null;
+    
+    @property({
+        type: Node,
+        tooltip: 'First ground'
+    })
+    public ground1: Node;
 
-  @property({
-    type: Node,
-    tooltip: "Ground 2 is Here",
-  })
-  ground2: Node | null = null;
+    @property({
+        type: Node,
+        tooltip: 'Second ground'
+    })
+    public ground2: Node;
 
-  @property({
-    type: Node,
-    tooltip: "Ground 3 is Here",
-  })
-  ground3: Node | null = null;
+    @property({
+        type: Node,
+        tooltip: 'Third ground'
+    })
+    public ground3: Node;
 
-  //create game object
-  public ground1With: number = 0;
-  public ground2With: number = 0;
-  public ground3With: number = 0;
+    //Create ground width variables
+    public groundWidth1:number;
+    public groundWidth2:number;
+    public groundWidth3:number;
 
-  public tempStartLocation1 = new Vec3();
-  public tempStartLocation2 = new Vec3();
-  public tempStartLocation3 = new Vec3();
+    //make temporary starting locations
+    public tempStartLocation1 = new Vec3;
+    public tempStartLocation2 = new Vec3;
+    public tempStartLocation3 = new Vec3;
+    
 
-  public gameCtrl = new GameCtrl();
-  public gameSpeed: number = 0;
+    //get the gamespeeds
+    public gameCtrlSpeed = new GameCtrl;
+    public gameSpeed: number;    
 
-  protected onLoad(): void {
-    this.startUp();
-  }
+    //all the things we want to happen when we start the script
+    onLoad(){
+        
+        this.startUp()
 
-  startUp(): void {
-    this.ground1With = this.ground1.getComponent(UITransform).width;
-    this.ground2With = this.ground2.getComponent(UITransform).width;
-    this.ground3With = this.ground3.getComponent(UITransform).width;
-
-    this.tempStartLocation1.x = 0;
-    this.tempStartLocation2.x = this.ground1With;
-    this.tempStartLocation3.x = this.ground1With + this.ground2With;
-
-    this.ground1.setPosition(this.tempStartLocation1);
-    this.ground2.setPosition(this.tempStartLocation2);
-    this.ground3.setPosition(this.tempStartLocation3);
-  }
-
-  protected update(dt: number): void {
-    this.gameSpeed = this.gameCtrl.speed;
-
-    this.tempStartLocation1 = this.ground1.getPosition();
-    this.tempStartLocation2 = this.ground2.getPosition();
-    this.tempStartLocation3 = this.ground3.getPosition();
-
-    this.tempStartLocation1.x -= this.gameSpeed * dt;
-    this.tempStartLocation2.x -= this.gameSpeed * dt;
-    this.tempStartLocation3.x -= this.gameSpeed * dt;
-
-    const scene = director.getScene();
-    const canvas = scene.getComponentInChildren(Canvas);
-
-    if (this.tempStartLocation1.x <= 0 - this.ground1With) {
-      this.tempStartLocation1.x = canvas.getComponent(UITransform).width;
-    }
-    if (this.tempStartLocation2.x <= 0 - this.ground2With) {
-      this.tempStartLocation2.x = canvas.getComponent(UITransform).width;
-    }
-    if (this.tempStartLocation3.x <= 0 - this.ground3With) {
-      this.tempStartLocation3.x = canvas.getComponent(UITransform).width;
     }
 
-    this.ground1.setPosition(this.tempStartLocation1);
-    this.ground2.setPosition(this.tempStartLocation2);
-    this.ground3.setPosition(this.tempStartLocation3);
-  }
+     //preparing the ground locations
+     startUp(){
+
+        //get ground width
+        this.groundWidth1 = this.ground1.getComponent(UITransform).width; 
+        this.groundWidth2 = this.ground2.getComponent(UITransform).width;
+        this.groundWidth3 = this.ground3.getComponent(UITransform).width;
+
+        //set temporary starting locations of ground
+        this.tempStartLocation1.x = 0;
+        this.tempStartLocation2.x = this.groundWidth1;
+        this.tempStartLocation3.x = this.groundWidth1 + this.groundWidth2;
+
+        //update position to final starting locations
+        this.ground1.setPosition(this.tempStartLocation1);
+        this.ground2.setPosition(this.tempStartLocation2);
+        this.ground3.setPosition(this.tempStartLocation3);
+
+    }
+
+    //everytime the game updates, move the ground
+    update(deltaTime: number) {
+
+        //get speed of ground and background
+        this.gameSpeed = this.gameCtrlSpeed.speed;
+
+        //place real location data into temp locations
+        this.tempStartLocation1 = this.ground1.position;
+        this.tempStartLocation2 = this.ground2.position;
+        this.tempStartLocation3 = this.ground3.position;
+        
+        //get speed and subtract location on x axis
+        this.tempStartLocation1.x -= this.gameSpeed * deltaTime;
+        this.tempStartLocation2.x -= this.gameSpeed * deltaTime;
+        this.tempStartLocation3.x -= this.gameSpeed * deltaTime;
+        
+    
+        //get the canvas size prepared
+        const scene = director.getScene();
+        const canvas = scene.getComponentInChildren(Canvas);
+
+        //check if ground1 went out of bounds. If so, return to the end of the line.
+        if (this.tempStartLocation1.x <= (0 - this.groundWidth1)) {
+            this.tempStartLocation1.x = canvas.getComponent(UITransform).width;
+        }
+
+        //same with ground2
+        if (this.tempStartLocation2.x <= (0 - this.groundWidth2)) {
+            this.tempStartLocation2.x = canvas.getComponent(UITransform).width;
+        }
+
+        //same with ground3
+        if (this.tempStartLocation3.x <= (0 - this.groundWidth3)) {
+            this.tempStartLocation3.x = canvas.getComponent(UITransform).width;
+        }
+
+        //place new locations back into ground nodes     
+        this.ground1.setPosition(this.tempStartLocation1);
+        this.ground2.setPosition(this.tempStartLocation2);
+        this.ground3.setPosition(this.tempStartLocation3);
+
+    }
+
 }
+
+
